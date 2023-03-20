@@ -6,7 +6,7 @@ Settings = {
 RegisterKeyMapping('entercar', 'Enter vehicle', 'KEYBOARD', 'F')
 
 RegisterCommand('entercar', function()
-    local dist, index,ped
+    local dist, index, ped
             ped = PlayerPedId()
             if IsPedInAnyVehicle(ped) then
                 if Settings.KeepEngineOn then
@@ -18,14 +18,16 @@ RegisterCommand('entercar', function()
                     end
                 end
             else
-                local veh = GetVehiclePedIsTryingToEnter(ped)
+                local coords = GetEntityCoords(ped)
+                local veh = GetClosestVehicle(coords.x, coords.y, coords.z, 5.0, 0, 127)
                 if veh ~= 0 then
+                    --print(veh)
                     if CanSit(veh) then
                         local coords = GetEntityCoords(ped)
                         if #(coords - GetEntityCoords(veh)) <= 3.5 then
                             ClearPedTasks(ped)
                             ClearPedSecondaryTask(ped)
-                            for i = 0, GetNumberOfVehicleDoors(veh), 1 do
+                            for i = 0, GetNumberOfVehicleDoors(veh) do
                                 local coord = GetEntryPositionOfDoor(veh, i)
                                 if (IsVehicleSeatFree(veh, i - 1) and
                                     GetVehicleDoorLockStatus(veh) ~= 2) then
@@ -40,7 +42,7 @@ RegisterCommand('entercar', function()
                                 end
                             end
                             if index then
-                                TaskEnterVehicle(ped, veh, 10000, index - 1,1.0, 1, 0)
+                                TaskEnterVehicle(ped, veh, 10000, index - 1, 1.0, 1, 0)
                             end
                             index, dist = nil, nil
                         end
