@@ -1,12 +1,12 @@
 Settings = {
-    KeepEngineOn = true, ---Keeps The engine on after leaving the vehicle if the engine is on,
+    KeepEngineOn = false, ---Keeps The engine on after leaving the vehicle if the engine is on,
     NPCCheck = true --- Adds NPC Check to the code(Checks if there is any ped inside vehicle or not)
 }
 
-CreateThread(function()
+RegisterKeyMapping('entercar', 'Enter vehicle', 'KEYBOARD', 'F')
+
+RegisterCommand('entercar', function()
     local dist, index,ped
-    while true do
-        if IsControlJustPressed(0, 75) then
             ped = PlayerPedId()
             if IsPedInAnyVehicle(ped) then
                 if Settings.KeepEngineOn then
@@ -47,10 +47,7 @@ CreateThread(function()
                     end
                 end
             end
-        end
-        Wait(1)
-    end
-end)
+end, false)
 
 CanSit = function(veh)
     if not Settings.NPCCheck then 
